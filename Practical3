@@ -1,0 +1,165 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace ExpenseTrackingModule
+{
+    // Expense Class
+    class Expense
+    {
+        public int Id { get; set; }
+        public string Category { get; set; }
+        public double Amount { get; set; }
+        public DateTime Date { get; set; }
+    }
+
+    class Program
+    {
+        // List to store expenses
+        static List<Expense> expenses = new List<Expense>();
+
+        static void Main(string[] args)
+        {
+            int choice = 0;
+
+            do
+            {
+                Console.WriteLine("\n===== EXPENSE TRACKING SYSTEM =====");
+                Console.WriteLine("1. Add Expense");
+                Console.WriteLine("2. View Expenses");
+                Console.WriteLine("3. Calculate Total Expense");
+                Console.WriteLine("4. Exit");
+                Console.Write("Enter your choice: ");
+
+                try
+                {
+                    choice = Convert.ToInt32(Console.ReadLine());
+
+                    switch (choice)
+                    {
+                        case 1:
+                            AddExpense();
+                            break;
+
+                        case 2:
+                            ViewExpenses();
+                            break;
+
+                        case 3:
+                            CalculateTotal();
+                            break;
+
+                        case 4:
+                            Console.WriteLine("Thank you for using Expense Tracking System!");
+                            break;
+
+                        default:
+                            Console.WriteLine("Invalid choice. Please select 1 to 4.");
+                            break;
+                    }
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Error: Please enter a valid number.");
+                    choice = 0;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                    choice = 0;
+                }
+
+            } while (choice != 4);
+        }
+
+        // Method to add an expense
+        static void AddExpense()
+        {
+            try
+            {
+                Expense expense = new Expense();
+
+                Console.Write("Enter Expense ID: ");
+                expense.Id = Convert.ToInt32(Console.ReadLine());
+
+                Console.Write("Enter Category: ");
+                expense.Category = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(expense.Category))
+                {
+                    throw new Exception("Category cannot be empty.");
+                }
+
+                Console.Write("Enter Amount: ");
+                expense.Amount = Convert.ToDouble(Console.ReadLine());
+
+                if (expense.Amount <= 0)
+                {
+                    throw new Exception("Amount must be greater than zero.");
+                }
+
+                expense.Date = DateTime.Now;
+
+                expenses.Add(expense);
+
+                Console.WriteLine("Expense added successfully!");
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Error: Please enter valid numeric values.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            finally
+            {
+                Console.WriteLine("Add Expense operation completed.");
+            }
+        }
+
+        // Method to display all expenses
+        static void ViewExpenses()
+        {
+            try
+            {
+                if (expenses.Count == 0)
+                {
+                    Console.WriteLine("No expenses available.");
+                    return;
+                }
+
+                Console.WriteLine("\n----- Expense Details -----");
+
+                foreach (Expense expense in expenses)
+                {
+                    Console.WriteLine(
+                        $"ID: {expense.Id}, " +
+                        $"Category: {expense.Category}, " +
+                        $"Amount: {expense.Amount}, " +
+                        $"Date: {expense.Date.ToShortDateString()}"
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
+
+        // Method to calculate total expense
+        static void CalculateTotal()
+        {
+            try
+            {
+                double total = expenses.Sum(e => e.Amount);
+
+                Console.WriteLine("\nTotal Expense = " + total);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
+    }
+}  
